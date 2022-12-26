@@ -6,7 +6,8 @@ input_prompt_size equ $ - input_prompt
 
 section .bss
 
-upper_bound resb 18
+upper_bound_size equ 18             ; an 18-digit integer guaranteed to fit in 64 bits
+upper_bound resb upper_bound_size
 
 section .text
 
@@ -34,7 +35,7 @@ syscall
 mov rax, 0                          ; read(1)
 mov rdi, 0                          ; from stdin
 lea rsi, [rel upper_bound]          ; the desired upper bound
-mov rdx, 18                         ; into a 18-char buffer in memory
+mov rdx, upper_bound_size           ; into a 18-char buffer in memory
 syscall
 
 xor rax, rax                        ; RAX = 0: passing non-variable arguments to atoi
@@ -60,7 +61,7 @@ pop rdx                             ; restore RDX and RCX
 pop rcx                             ; to enable the algorithm to continue
 
 cmp rdx, rbx                        ; loop until F(n) [RDX; the next element]
-jle fib                             ; exceeds the desired value [R8]
+jle fib                             ; exceeds the desired value [RBX]
 
 pop rbx                             ; restore RBX and stack pointer
 xor rax, rax                        ; exit with status 0
